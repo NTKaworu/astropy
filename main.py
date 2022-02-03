@@ -2,9 +2,10 @@ import configparser, time, datetime, os, sys
 
 sensorsNames = []
 sensorsValues = []
+path = 'output/images'
 
 def takePicture(i, c, now):    
-    c.capture(f'output/images/{i}-{now}.jpg')
+    c.capture(f'{path}/{i}-{now}.jpg')
 
 
 def takeValues(config, s , now):
@@ -62,13 +63,13 @@ def unpackTuples(i):
 
 
 def main():
+    global path
     global sensorsNames
     file = "config.ini"
     config = configparser.ConfigParser()
     config.read(file)
 
     counter = 0
-    path = 'output/images'
 
     while os.path.exists(path):   
         counter += 1
@@ -92,7 +93,7 @@ def main():
 
 
     if config['Generali']['sensori'] == "True":
-        outWorkbook = xlsxwriter.Workbook('output/out.xlsx')
+        outWorkbook = xlsxwriter.Workbook('output'+(str(counter)) +'/out.xlsx')
         outSheet = outWorkbook.add_worksheet()
 
         if config['Sensori']['umidita'] == "True":
