@@ -15,8 +15,8 @@ counter = 1
 
 
 def create_csv_file(data_file):
-    with open(data_file, 'w') as f:
-        writer = csv.writer(f)
+    with open(data_file, 'w') as g:
+        writer = csv.writer(g)
         header = ("Counter", "Date/time", "Latitude", "Longitude", "Temperature", "Humidity", "Pressure")
         writer.writerow(header)
 
@@ -48,8 +48,8 @@ def get_datas(counter):
 
 
 def write_data(data_file, data):
-    with open(data_file, 'a') as f:
-        writer = csv.writer(f)
+    with open(data_file, 'a') as g:
+        writer = csv.writer(g)
         writer.writerow(data)
 
 
@@ -77,7 +77,6 @@ def capture_photo():
 
 def main():
     global counter
-    global now_time
 
     setup()
 
@@ -90,8 +89,8 @@ def main():
             logger.info(f"iteration {counter}")
             counter += 1
             sleep(30)
-            now_time = datetime.now()
-        except:
+            now = datetime.now()
+        except Exception as e:
             logger.error(f'{e.__class__.__name__}: {e}')
 
 
