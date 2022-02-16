@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Counter
 from logzero import logger, logfile
 from sense_hat import SenseHat
 from picamera import PiCamera
@@ -11,16 +10,20 @@ import csv
 s = SenseHat()
 cam = PiCamera()
 data_file = None
+base_folder = None
+counter = 1
+
 
 def create_csv_file(data_file):
-    with open(data_file, 'w') as f:
-        writer = csv.writer(f)
+    with open(data_file, 'w') as g:
+        writer = csv.writer(g)
         header = ("Counter", "Date/time", "Latitude", "Longitude", "Temperature", "Humidity", "Pressure")
         writer.writerow(header)
 
 
 def setup():
     global data_file
+    global base_folder
     base_folder = Path(__file__).parent.resolve()
     logfile(base_folder/"events.log")
 
@@ -45,27 +48,50 @@ def get_datas(counter):
 
 
 def write_data(data_file, data):
-    with open(data_file, 'a') as f:
-        writer = csv.writer(f)
+    with open(data_file, 'a') as g:
+        writer = csv.writer(g)
         writer.writerow(data)
 
 
+def convert(angle):
+    sign, degrees, minutes, seconds = angle.signed_dms()
+    exif_angle = f'{degrees:.0f}/1,{minutes:.0f}/1,{seconds*10:.0f}/10'
+    return sign < 0, exif_angle
+
+
 def capture_photo():
-    cam.capture()
+    location = ISS.coordinates()
+
+    # Convert the latitude and longitude to EXIF-appropriate representations
+    south, exif_latitude = convert(location.latitude)
+    west, exif_longitude = convert(location.longitude)
+
+    # Set the EXIF tags specifying the current location
+    cam.exif_tags['GPS.GPSLatitude'] = exif_latitude
+    cam.exif_tags['GPS.GPSLatitudeRef'] = "S" if south else "N"
+    cam.exif_tags['GPS.GPSLongitude'] = exif_longitude
+    cam.exif_tags['GPS.GPSLongitudeRef'] = "W" if west else "E"
+
+    cam.capture(f"{base_folder}/photo_{counter:03d}.jpg")
 
 
 def main():
+    global counter
+
     setup()
 
-    counter = 1
     now = datetime.now()
     start = datetime.now()
-    while (now < start + timedelta(minutes=175)):
+    while (now < start + timedelta(minutes=3)):
         try:
             write_data(data_file, get_datas(counter))
             capture_photo()
-        except:
-            print("ciao")
+            logger.info(f"iteration {counter}")
+            counter += 1
+            sleep(30)
+            now = datetime.now()
+        except Exeption as es:
+            logger.error(f'{e.__class__.__name__}: {e}')
 
 
 if __name__ == '__main__':
