@@ -1,0 +1,8 @@
+logzero
+sense_hat
+picamera
+skyfield
+orbit
+time
+datetime
+csv
