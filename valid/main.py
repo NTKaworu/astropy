@@ -136,11 +136,11 @@ def main():
     now = datetime.now()
     start = datetime.now()
     counter = 1
-    
+
     # Main loop
     while now < start + timedelta(minutes=time_frame):
         try:
-            write_data(data_file, get_data(counter))
+            write_data(get_data(counter))
             capture_photo(counter)
             logger.info(f"iteration {counter}")
             counter += 1
