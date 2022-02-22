@@ -135,7 +135,8 @@ def main():
 
     now = datetime.now()
     start = datetime.now()
-
+    counter = 1
+    
     # Main loop
     while now < start + timedelta(minutes=time_frame):
         try:
