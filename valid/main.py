@@ -1,5 +1,4 @@
 from pathlib import Path
-from socket import timeout
 from logzero import logger, logfile
 from sense_hat import SenseHat
 from picamera import PiCamera
@@ -139,12 +138,8 @@ def capture_photo(counter):
 
 
 def main():
-    """
-    
-    """
     setup()
 
-    counter = 1
     now = datetime.now()
     start = datetime.now()
 
