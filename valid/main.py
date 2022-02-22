@@ -9,19 +9,18 @@ import csv
 
 s = SenseHat()
 cam = PiCamera()
-data_file = None
-base_folder = Path(__file__).parent.resolve()
 location = ISS.coordinates()
+
+base_folder = Path(__file__).parent.resolve()
+data_file = base_folder/"data.csv"
 
 sleep_duration = 30 # Seconds - Iterval between each iteration
 time_frame = 175 # Minutes - Total time frame of data gathering
 
 
-def create_csv_file(data_file):
+def create_csv_file():
     """
     Create data file
-
-    :type data_file: string
     """
     with open(data_file, 'w') as g:
         writer = csv.writer(g)
@@ -44,13 +43,8 @@ def setup():
     - create log file;
     - setup camera resolution.
     """
-    global data_file
-
-    data_file = base_folder/"data.csv"
-    create_csv_file(data_file)
-
+    create_csv_file()
     logfile(base_folder/"events.log")
-
     cam.resolution = (1296, 972)
 
 
@@ -96,11 +90,10 @@ def get_data(counter):
     return data
 
 
-def write_data(data_file, data):
+def write_data(data):
     """
     Write collected sensors data to csv file
 
-    :type data_file: string
     :type data: tuple
     """
     with open(data_file, 'a') as g:
@@ -144,7 +137,7 @@ def main():
     start = datetime.now()
 
     # Main loop
-    while (now < start + timedelta(minutes=time_frame)):
+    while now < start + timedelta(minutes=time_frame):
         try:
             write_data(data_file, get_data(counter))
             capture_photo(counter)
