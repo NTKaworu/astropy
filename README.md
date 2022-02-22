@@ -4,7 +4,7 @@ Ciao a tutti!!
 
 Questa è una repository, un luogo dove sono solito caricare il codice di ciò che faccio in modo da renderlo disponibile in modo semplice a chiunque ne abbia bisogno.
 
-------------------------------------------------------------------------------------------------------------------------------
+---
 
 # Download
 
